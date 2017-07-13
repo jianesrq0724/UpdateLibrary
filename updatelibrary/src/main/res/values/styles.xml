@@ -1,0 +1,17 @@
+<resources>
+
+    <!--圆角按钮可点击-->
+    <style name="btn_round_clickable">
+        <item name="android:layout_height">68dp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:background">@drawable/ripper_clickable_button</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+
+    <style name="CustomDialogTheme" parent="Theme.AppCompat.Dialog">
+        <item name="android:windowBackground">@color/transparent</item>
+    </style>
+
+</resources>
