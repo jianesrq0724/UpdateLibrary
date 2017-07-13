@@ -82,6 +82,7 @@ public class UpdateDialog extends Dialog {
         mUpdateUrl = url;
         fileName = "baidaibao-v" + version + ".apk";
         mUpdateDesc = desc;
+        mUpdateForce = force;
     }
 
     private long mDownloadId;

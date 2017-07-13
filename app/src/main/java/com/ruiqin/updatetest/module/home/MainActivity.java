@@ -3,24 +3,25 @@ package com.ruiqin.updatetest.module.home;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
+import com.ruiqin.downloadlibrary.UpdateDialog;
 import com.ruiqin.updatetest.R;
 import com.ruiqin.updatetest.base.BaseActivity;
-import com.ruiqin.updatetest.module.BlankFragment;
 import com.ruiqin.updatetest.util.ToastUtils;
+
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class MainActivity extends BaseActivity<MainPresenter, MainModel> implements MainContract.View {
 
     @Override
     protected int getFragmentId() {
-        return R.id.fragment;
+        return 0;
     }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        addFragment(new BlankFragment());
-        mPresenter.testjudge(2);
     }
 
     @Override
@@ -50,5 +51,27 @@ public class MainActivity extends BaseActivity<MainPresenter, MainModel> impleme
         } else {
             super.onBackPressed();
         }
+    }
+
+    @OnClick(R.id.button)
+    public void onViewClicked() {
+        showUpdateDialog();
+    }
+
+    /**
+     * 展示dialog
+     */
+    UpdateDialog mUpdateDialog;
+
+    public void showUpdateDialog() {
+        if (mUpdateDialog == null) {
+            mUpdateDialog = new UpdateDialog(mContext);
+            String url = "http://www.baidu.com";
+            String version = "1.0";
+            String desc = "test";
+            boolean force = true;
+            mUpdateDialog.setValue(url, version, desc, force);
+        }
+        mUpdateDialog.show();
     }
 }
