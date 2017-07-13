@@ -96,27 +96,35 @@ public class UpdateDialog extends Dialog {
         mBbtnUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mDownloadId != 0) {//downloadID不为默认值，表示存在下载任务
-                    int status = DownloadUtils.queryDownloadStatus(mContext, mDownloadId);
-                    Log.e("TAG", status + "");
-                    switch (status) {
-                        case DownloadManager.STATUS_RUNNING://下载中
-                            DownloadToast.showShort(mContext, "正在下载，请稍后");
-                            break;
-                        case DownloadManager.STATUS_FAILED://下载失败
-                            startDownApk();//重新开始下载
-                            break;
-                        case DownloadManager.STATUS_SUCCESSFUL://下载成功
-                            installApk();
-                            break;
-                        default:
-                            break;
-                    }
-                } else {//无下载任务，开始下载
-                    startDownApk();
-                }
+                onClickUpdate();//点击下载
             }
         });
+    }
+
+
+    /**
+     * 点击下载
+     */
+    private void onClickUpdate() {
+        if (mDownloadId != 0) {//downloadID不为默认值，表示存在下载任务
+            int status = DownloadUtils.queryDownloadStatus(mContext, mDownloadId);
+            Log.e("TAG", status + "");
+            switch (status) {
+                case DownloadManager.STATUS_RUNNING://下载中
+                    DownloadToast.showShort(mContext, "正在下载，请稍后");
+                    break;
+                case DownloadManager.STATUS_FAILED://下载失败
+                    startDownApk();//重新开始下载
+                    break;
+                case DownloadManager.STATUS_SUCCESSFUL://下载成功
+                    installApk();
+                    break;
+                default:
+                    break;
+            }
+        } else {//无下载任务，开始下载
+            startDownApk();
+        }
     }
 
     /**
