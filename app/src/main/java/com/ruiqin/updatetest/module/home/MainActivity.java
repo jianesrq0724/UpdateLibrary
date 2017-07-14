@@ -1,12 +1,19 @@
 package com.ruiqin.updatetest.module.home;
 
 import android.app.Activity;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
+import android.view.View;
 
+import com.blankj.utilcode.util.AppUtils;
 import com.ruiqin.downloadlibrary.UpdateDialog;
 import com.ruiqin.updatetest.R;
 import com.ruiqin.updatetest.base.BaseActivity;
@@ -60,14 +67,19 @@ public class MainActivity extends BaseActivity<MainPresenter, MainModel> impleme
     private String requestPermission = "android.permission.WRITE_EXTERNAL_STORAGE";
     private static final int DOWNLOAD_REQUESTCODE = 1;
 
-    @OnClick(R.id.button)
-    public void onViewClicked() {
-        onClickUpdate();
-    }
 
     private void onClickUpdate() {
         if (ActivityCompat.checkSelfPermission(mContext, requestPermission) != PackageManager.PERMISSION_GRANTED) {
+
+            boolean showRequestPermission = ActivityCompat.shouldShowRequestPermissionRationale((Activity) mContext, requestPermission);
             ActivityCompat.requestPermissions((Activity) mContext, new String[]{requestPermission}, DOWNLOAD_REQUESTCODE);
+
+//            if (showRequestPermission) {
+//
+//            } else {
+//                ActivityCompat.requestPermissions((Activity) mContext, new String[]{requestPermission}, DOWNLOAD_REQUESTCODE);
+//            }
+
         } else {
             showUpdateDialog();
         }
@@ -87,12 +99,53 @@ public class MainActivity extends BaseActivity<MainPresenter, MainModel> impleme
                     }
 
                     if (!mShowRequestPermission) {
-                        ToastUtils.showShort("请手动授予权限");
+                        showPermissionDialog();
                         return;
                     }
                 }
                 onClickUpdate();
                 break;
+        }
+    }
+
+
+    AlertDialog mPermissionDialog;
+
+    /**
+     * 不再提示权限 时的展示对话框
+     */
+    private void showPermissionDialog() {
+        if (mPermissionDialog == null) {
+            mPermissionDialog = new AlertDialog.Builder(mContext)
+                    .setMessage("已禁用权限，请手动授予")
+                    .setPositiveButton("设置", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            cancelPermissionDialog();
+                            Uri packageURI = Uri.parse("package:" + AppUtils.getAppPackageName());
+                            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, packageURI);
+                            startActivity(intent);
+                        }
+                    })
+                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            cancelPermissionDialog();
+                        }
+                    })
+                    .create();
+        }
+        mPermissionDialog.show();
+    }
+
+    /**
+     * 取消权限对话框
+     *
+     * @return
+     */
+    private void cancelPermissionDialog() {
+        if (mPermissionDialog != null) {
+            mPermissionDialog.cancel();
         }
     }
 
@@ -111,5 +164,16 @@ public class MainActivity extends BaseActivity<MainPresenter, MainModel> impleme
             mUpdateDialog.setValue(url, version, desc, force);
         }
         mUpdateDialog.show();
+    }
+
+    @OnClick({R.id.button})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.button:
+                onClickUpdate();
+                break;
+            default:
+                break;
+        }
     }
 }

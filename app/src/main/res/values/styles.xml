@@ -12,7 +12,6 @@
         <item name="android:textColorHint">@color/text_gray</item>
     </style>
 
-
     <!--透明主题-->
     <style name="AppTransparentTheme" parent="@style/AppTheme">
         <!--设置透明需要下面两个属性一起使用-->
