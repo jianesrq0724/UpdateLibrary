@@ -8,11 +8,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
+import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -37,6 +38,14 @@ public class UpdateDialog extends Dialog {
     private Context mContext;
     private boolean mUpdateForce;
 
+    onClickListener onUpdateListener;
+
+
+    public void setOnClickUpdateListener(onClickListener listener) {
+        onUpdateListener = listener;
+    }
+
+
     public UpdateDialog(@NonNull Context context) {
         this(context, R.style.CustomDialogTheme);
     }
@@ -44,10 +53,6 @@ public class UpdateDialog extends Dialog {
     public UpdateDialog(@NonNull Context context, @StyleRes int themeResId) {
         super(context, themeResId);
         mContext = context;
-    }
-
-    protected UpdateDialog(@NonNull Context context, boolean cancelable, @Nullable OnCancelListener cancelListener) {
-        super(context, cancelable, cancelListener);
     }
 
     @Override
@@ -96,16 +101,19 @@ public class UpdateDialog extends Dialog {
         mBbtnUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onClickUpdate();//点击下载
+                if (onUpdateListener != null) {
+                    onUpdateListener.onClick();
+                }
             }
         });
+
     }
 
 
     /**
      * 点击下载
      */
-    private void onClickUpdate() {
+    public void onClickUpdate() {
         if (mDownloadId != 0) {//downloadID不为默认值，表示存在下载任务
             int status = DownloadUtils.queryDownloadStatus(mContext, mDownloadId);
             Log.e("TAG", status + "");
@@ -203,11 +211,24 @@ public class UpdateDialog extends Dialog {
         if (apkFile == null || !apkFile.exists()) {
             startDownApk();
         } else {
-            Intent mIntent = new Intent(Intent.ACTION_VIEW);
-            mIntent.setDataAndType(Uri.fromFile(apkFile), "application/vnd.android.package-archive");
-            mIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            mContext.startActivity(mIntent);
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            Uri data;
+            String type = "application/vnd.android.package-archive";
+
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+                data = Uri.fromFile(apkFile);
+            } else {
+                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                data = FileProvider.getUriForFile(mContext, "com.ruiiqn.update.fileprovider", apkFile);
+            }
+            intent.setDataAndType(data, type);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            mContext.startActivity(intent);
         }
+    }
+
+    public interface onClickListener {
+        void onClick();
     }
 
 }
