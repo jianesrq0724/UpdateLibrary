@@ -1,11 +1,6 @@
 > # 所有的Demo都是基于BaseProject项目来开发的
 > # [BaseProject](https://github.com/jianesrq0724/BaseProject)
 ---
-
-
-
-
-
 ## 关于UpdateLibrary的介绍
 * 将升级功能抽取为Dialog，创建对应的Dialog，将升级地址和文字描述传入就可以
 * 缺陷：升级的对话框的布局样式是固定的，没法改，后期继续优化，支持自定义布局
