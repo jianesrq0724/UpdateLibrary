@@ -76,7 +76,6 @@ public class UpdateDialog extends Dialog {
         if (fileName != null) {
             apkFile = new File(Environment.getExternalStorageDirectory().getPath() + DownloadUtils.FILE_PATH + File.separator + fileName);
         }
-
         mDownloadId = getDownloadIdFromSp();//从SP中获取downloadId
     }
 
@@ -106,7 +105,6 @@ public class UpdateDialog extends Dialog {
                 }
             }
         });
-
     }
 
 

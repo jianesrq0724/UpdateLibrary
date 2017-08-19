@@ -11,7 +11,9 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import com.ruiqin.downloadlibrary.UpdateActivity;
 import com.ruiqin.downloadlibrary.UpdateDialog;
+import com.ruiqin.downloadlibrary.bean.UpdateInfo;
 import com.ruiqin.updatelibrary.R;
 import com.ruiqin.updatelibrary.base.BaseActivity;
 import com.ruiqin.updatelibrary.commonality.view.PermissionTipDialog;
@@ -33,11 +35,12 @@ public class MainActivity extends BaseActivity<MainPresenter, MainModel> impleme
 
     @OnClick(R.id.btn_update)
     public void onBtnUpdate() {
+        boolean force = false;
         String url = "http://imtt.dd.qq.com/16891/789C83C3D3B6DC67BEDA10C5FE776D8F.apk?fsname=cn.baidaibao_1.5.0_10.apk&csr=1bbd";
         String version = "1.0";
-        String desc = "test";
-        boolean force = false;
-        showUpdateDialog(url, version, desc, force);
+        String tip = "1、test";
+        UpdateInfo updateInfo = new UpdateInfo(force, url, version, tip);
+        startActivity(UpdateActivity.newIntent(mContext, updateInfo));
     }
 
     private static final int PERMISSION_WRITE_STORAGE = 1;
